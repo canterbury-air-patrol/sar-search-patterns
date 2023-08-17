@@ -1,0 +1,40 @@
+{
+  "name": "@canterbury-air-patrol/sar-search-patterns",
+  "version": "0.0.1",
+  "description": "Draw SAR Search Patterns",
+  "main": "sar-search-patterns.js",
+  "scripts": {
+    "build": "esbuild example.js --bundle --loader:.js=jsx --outdir=out --minify",
+    "check": "eslint *.js",
+    "start": "http-server -a localhost -p 8000",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/canterbury-air-patrol/sar-search-patterns.git"
+  },
+  "keywords": [
+    "sar",
+    "search",
+    "patterns"
+  ],
+  "author": "Scott Parlane",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/canterbury-air-patrol/sar-search-patterns/issues"
+  },
+  "homepage": "https://github.com/canterbury-air-patrol/sar-search-patterns#readme",
+  "devDependencies": {
+    "esbuild": "~0.18.17",
+    "eslint": "~8.47.0",
+    "eslint-plugin-react": "~7.33.1",
+    "http-server": "^14.1.1",
+    "react-dom": "~18.2.0",
+    "standard": "~17.1.0"
+  },
+  "dependencies": {
+    "bootstrap": "~5.3.1",
+    "proptypes": "^1.1.0",
+    "react": "^18.2.0"
+  }
+}
