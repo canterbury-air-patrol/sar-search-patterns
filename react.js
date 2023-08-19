@@ -5,7 +5,8 @@ class SearchDisplay extends React.Component {
   constructor (props) {
     super(props)
     this.state = {
-      search: this.props.search
+      search: this.props.search,
+      searchLeg: this.props.leg !== undefined ? this.props.leg : this.props.search.currentLeg
     }
     this.canvasRef = React.createRef()
     this.minX = 0
@@ -87,7 +88,8 @@ class SearchDisplay extends React.Component {
   }
 }
 SearchDisplay.propTypes = {
-  search: PropTypes.object.isRequired
+  search: PropTypes.object.isRequired,
+  leg: PropTypes.number
 }
 
 export { SearchDisplay }

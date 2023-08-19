@@ -1,8 +1,9 @@
 class SearchLeg {
-  constructor (from, to, bearing) {
+  constructor (from, to, distance, bearing) {
     this.from = from
     this.to = to
     this.bearing = bearing
+    this.distance = distance
   }
 }
 
@@ -39,7 +40,7 @@ function move (from, direction, distance) {
 }
 
 class SectorSearch extends SearchPattern {
-  constructor (sweepWidth, multiplier, startingDirection) {
+  constructor (sweepWidth, multiplier, iterations, startingDirection) {
     super(sweepWidth)
     this.startingDirection = startingDirection
     if (this.startingDirection === undefined) {
@@ -52,6 +53,10 @@ class SectorSearch extends SearchPattern {
     if (this.multiplier > 3) {
       this.multiplier = 3
     }
+    this.iterations = iterations
+    if (!(this.iterations === 1 || this.iterations === 2 || this.iterations === 3)) {
+      this.iterations = 1
+    }
     this.generateSearchLegs()
   }
 
@@ -59,16 +64,17 @@ class SectorSearch extends SearchPattern {
     this.searchLegs = []
     let currentBearing = this.startingDirection
     let lastPoint = { x: 0, y: 0 }
-    for (let i = 1; i < (9 * 1) + 1; i++) {
+    const legLength = this.sweepWidth * this.multiplier
+    for (let i = 1; i < (9 * this.iterations) + 1; i++) {
       const from = lastPoint
       let to = { x: 0, y: 0 }
       if ((i % 3) !== 0) {
-        to = move(from, currentBearing, this.sweepWidth * this.multiplier)
+        to = move(from, currentBearing, legLength)
       }
-      this.searchLegs.push(new SearchLeg(from, to, currentBearing))
+      this.searchLegs.push(new SearchLeg(from, to, legLength, currentBearing))
       if ((i % 3) === 0) {
         if ((i % 9) === 0) {
-          currentBearing = (currentBearing + 60) % 360
+          currentBearing = (currentBearing + 30) % 360
         }
       } else {
         currentBearing = (currentBearing + 120) % 360
@@ -91,9 +97,10 @@ class ExpandingBoxSearch extends SearchPattern {
     let direction = this.startingDirection
     let from = { x: 0, y: 0 }
     for (let i = 0; i < (this.iterations * 4); i++) {
-      const to = move(from, direction, this.sweepWidth * (1 + (i / 2)))
-      this.searchLegs.push(new SearchLeg(from, to, direction))
-      direction = (direction + 90 % 360)
+      const legLength = this.sweepWidth * (1 + Math.round((i - 1) / 2))
+      const to = move(from, direction, legLength)
+      this.searchLegs.push(new SearchLeg(from, to, this.sweepWidth * (1 + Math.round((i - 1) / 2)), direction))
+      direction = (direction + 90) % 360
       from = to
     }
   }
@@ -117,22 +124,28 @@ class CreepingLineAheadSearch extends SearchPattern {
       let direction = this.progressDirection
       let from
       let to
+      let distance
+      const leg = Math.round(i / 2)
       if ((i % 4) === 0) {
-        from = move(baseNear, this.progressDirection, this.sweepWidth * Math.round(i / 2))
-        to = move(baseNear, this.progressDirection, this.sweepWidth * (Math.round(i / 2) + 1))
+        from = move(baseNear, this.progressDirection, this.sweepWidth * leg)
+        to = move(baseNear, this.progressDirection, this.sweepWidth * (leg + 1))
+        distance = this.sweepWidth
       } else if ((i % 4) === 1) {
-        from = move(baseNear, this.progressDirection, this.sweepWidth * Math.round(i / 2))
-        to = move(baseFar, this.progressDirection, this.sweepWidth * Math.round(i / 2))
+        from = move(baseNear, this.progressDirection, this.sweepWidth * leg)
+        to = move(baseFar, this.progressDirection, this.sweepWidth * leg)
         direction = (direction + 90) % 360
+        distance = this.legLength
       } else if ((i % 4) === 2) {
-        from = move(baseFar, this.progressDirection, this.sweepWidth * Math.round(i / 2))
-        to = move(baseFar, this.progressDirection, this.sweepWidth * (Math.round(i / 2) + 1))
+        from = move(baseFar, this.progressDirection, this.sweepWidth * leg)
+        to = move(baseFar, this.progressDirection, this.sweepWidth * (leg + 1))
+        distance = this.sweepWidth
       } else {
-        from = move(baseFar, this.progressDirection, this.sweepWidth * Math.round(i / 2))
-        to = move(baseNear, this.progressDirection, this.sweepWidth * (Math.round(i / 2)))
+        from = move(baseFar, this.progressDirection, this.sweepWidth * leg)
+        to = move(baseNear, this.progressDirection, this.sweepWidth * leg)
         direction = (direction - 90) % 360
+        distance = this.legLength
       }
-      this.searchLegs.push(new SearchLeg(from, to, direction))
+      this.searchLegs.push(new SearchLeg(from, to, distance, direction))
     }
   }
 }
