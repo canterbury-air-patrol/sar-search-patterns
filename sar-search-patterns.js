@@ -9,7 +9,7 @@ class SearchLeg {
 
 class SearchPattern {
   constructor (sweepWidth) {
-    this.sweepWidth = sweepWidth
+    this.sweepWidth = Number(sweepWidth)
     this.searchLegs = []
     this.currentLeg = 1
   }
@@ -42,7 +42,7 @@ function move (from, direction, distance) {
 class SectorSearch extends SearchPattern {
   constructor (sweepWidth, multiplier, iterations, startingDirection) {
     super(sweepWidth)
-    this.startingDirection = startingDirection
+    this.startingDirection = Number(startingDirection)
     if (this.startingDirection === undefined) {
       this.startingDirection = 0
     }
@@ -87,8 +87,8 @@ class SectorSearch extends SearchPattern {
 class ExpandingBoxSearch extends SearchPattern {
   constructor (sweepWidth, iterations, startingDirection) {
     super(sweepWidth)
-    this.iterations = iterations
-    this.startingDirection = startingDirection
+    this.iterations = Number(iterations)
+    this.startingDirection = Number(startingDirection)
     this.generateSearchLegs()
   }
 
@@ -109,10 +109,9 @@ class ExpandingBoxSearch extends SearchPattern {
 class CreepingLineAheadSearch extends SearchPattern {
   constructor (sweepWidth, legLength, legs, progressDirection) {
     super(sweepWidth)
-    this.legLength = legLength
-    this.legs = legs
-    this.progressDirection = progressDirection
-    this.currentBearing = (progressDirection + 90) % 360
+    this.legLength = Number(legLength)
+    this.legs = Number(legs)
+    this.progressDirection = Number(progressDirection)
     this.generateSearchLegs()
   }
 
