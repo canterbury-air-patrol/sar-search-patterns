@@ -19,7 +19,7 @@ class SearchPattern {
   }
 
   get complete () {
-    return (this.currentLeg >= this.searchLegs.length)
+    return (this.currentLeg > this.searchLegs.length)
   }
 
   getLegs () {
@@ -142,7 +142,7 @@ class CreepingLineAheadSearch extends SearchPattern {
       } else {
         from = move(baseFar, this.progressDirection, this.sweepWidth * leg)
         to = move(baseNear, this.progressDirection, this.sweepWidth * leg)
-        direction = (direction - 90) % 360
+        direction = (direction + 270) % 360
         distance = this.legLength
       }
       this.searchLegs.push(new SearchLeg(from, to, distance, direction))
