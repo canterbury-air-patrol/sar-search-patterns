@@ -42,6 +42,7 @@ function move (from, direction, distance) {
 class SectorSearch extends SearchPattern {
   constructor (sweepWidth, multiplier, iterations, startingDirection) {
     super(sweepWidth)
+    this.searchType = 'sector'
     this.startingDirection = Number(startingDirection)
     if (this.startingDirection === undefined) {
       this.startingDirection = 0
@@ -87,6 +88,7 @@ class SectorSearch extends SearchPattern {
 class ExpandingBoxSearch extends SearchPattern {
   constructor (sweepWidth, iterations, startingDirection) {
     super(sweepWidth)
+    this.searchType = 'expandingbox'
     this.iterations = Number(iterations)
     this.startingDirection = Number(startingDirection)
     this.generateSearchLegs()
@@ -109,6 +111,7 @@ class ExpandingBoxSearch extends SearchPattern {
 class CreepingLineAheadSearch extends SearchPattern {
   constructor (sweepWidth, legLength, legs, progressDirection) {
     super(sweepWidth)
+    this.searchType = 'creepingline'
     this.legLength = Number(legLength)
     this.legs = Number(legs)
     this.progressDirection = Number(progressDirection)
