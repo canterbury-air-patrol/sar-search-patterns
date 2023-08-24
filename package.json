@@ -1,6 +1,6 @@
 {
   "name": "@canterbury-air-patrol/sar-search-patterns",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "Draw SAR Search Patterns",
   "main": "sar-search-patterns.js",
   "scripts": {

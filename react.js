@@ -112,6 +112,7 @@ class SearchConfiguration extends React.Component {
     super(props)
     this.handleChangeSearch = this.handleChangeSearch.bind(this)
     this.handleChangeSweepWidth = this.handleChangeSweepWidth.bind(this)
+    this.handleChangeMultiplier = this.handleChangeMultiplier.bind(this)
     this.handleChangeLegLength = this.handleChangeLegLength.bind(this)
     this.handleChangeIterations = this.handleChangeIterations.bind(this)
     this.handleChangeDirection = this.handleChangeDirection.bind(this)
@@ -176,6 +177,23 @@ class SearchConfiguration extends React.Component {
     })
   }
 
+  handleChangeMultiplier (event) {
+    const target = event.target
+    const value = Number(target.value)
+
+    this.setState(function (oldState) {
+      oldState.multiplier = value
+
+      if (this.props.updateSearch !== undefined) {
+        this.props.updateSearch(constructSearch(oldState))
+      }
+
+      return {
+        multiplier: value
+      }
+    })
+  }
+
   handleChangeIterations (event) {
     const target = event.target
     const value = Number(target.value)
@@ -215,8 +233,12 @@ class SearchConfiguration extends React.Component {
     const inputs = []
     if (this.state.searchType === 'sector' || this.state.searchType === 'expandingbox') {
       labels.push((<td key='iterations'>Iterations</td>))
-      labels.push((<td key='direction'>Initial Direction</td>))
       inputs.push((<td key='iterations'><Form.Control type='number' onChange={this.handleChangeIterations} value={this.state.iterations} /></td>))
+      if (this.state.searchType === 'sector') {
+        labels.push((<td key='multiplier'>Multiplier</td>))
+        inputs.push((<td key='multiplier'><Form.Control type='number' onChange={this.handleChangeMultiplier} value={this.state.multiplier} /></td>))
+      }
+      labels.push((<td key='direction'>Initial Direction</td>))
       inputs.push((<td key='direction'><Form.Control type='number' onChange={this.handleChangeDirection} value={this.state.initialDirection} /></td>))
     } else if (this.state.searchType === 'creepingline') {
       labels.push((<td key='legs'>Leg Length</td>))
