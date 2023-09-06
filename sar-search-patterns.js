@@ -22,6 +22,15 @@ class SearchPattern {
     return (this.currentLeg > this.searchLegs.length)
   }
 
+  get length () {
+    let length = 0
+    for (const legIdx in this.searchLegs) {
+      const tmpLeg = this.searchLegs[legIdx]
+      length += tmpLeg.distance
+    }
+    return length
+  }
+
   getLegs () {
     return this.searchLegs
   }
