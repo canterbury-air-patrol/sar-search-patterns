@@ -25,7 +25,7 @@
   },
   "homepage": "https://github.com/canterbury-air-patrol/sar-search-patterns#readme",
   "devDependencies": {
-    "esbuild": "~0.19.2",
+    "esbuild": "~0.20.0",
     "eslint": "~8.56.0",
     "eslint-plugin-react": "~7.33.1",
     "http-server": "^14.1.1",
