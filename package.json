@@ -27,7 +27,7 @@
   "devDependencies": {
     "esbuild": "~0.23.0",
     "eslint": "~8.57.0",
-    "eslint-plugin-react": "~7.34.0",
+    "eslint-plugin-react": "~7.35.0",
     "http-server": "^14.1.1",
     "react-dom": "~18.3.1",
     "standard": "~17.1.0"
