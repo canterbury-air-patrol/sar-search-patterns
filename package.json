@@ -5,7 +5,7 @@
   "main": "sar-search-patterns.js",
   "scripts": {
     "build": "esbuild example.js --bundle --loader:.js=jsx --outdir=out --minify",
-    "check": "eslint *.js",
+    "check": "eslint *.js && prettier -c *.js",
     "start": "http-server -a localhost -p 8000",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -25,12 +25,14 @@
   },
   "homepage": "https://github.com/canterbury-air-patrol/sar-search-patterns#readme",
   "devDependencies": {
+    "@eslint/js": "^9.12.0",
     "esbuild": "~0.24.0",
-    "eslint": "~8.57.0",
-    "eslint-plugin-react": "~7.37.0",
+    "eslint": "^9.12.0",
+    "eslint-plugin-react": "^7.37.1",
+    "globals": "^15.11.0",
     "http-server": "^14.1.1",
-    "react-dom": "~18.3.1",
-    "standard": "~17.1.0"
+    "prettier": "^3.3.3",
+    "react-dom": "~18.3.1"
   },
   "dependencies": {
     "bootstrap": "~5.3.1",

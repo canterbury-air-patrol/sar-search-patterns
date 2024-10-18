@@ -5,7 +5,7 @@ import { Table, Form } from 'react-bootstrap'
 import { SectorSearch, ExpandingBoxSearch, CreepingLineAheadSearch } from './sar-search-patterns'
 
 class SearchDisplay extends React.Component {
-  constructor (props) {
+  constructor(props) {
     super(props)
     this.state = {
       search: this.props.search,
@@ -18,7 +18,7 @@ class SearchDisplay extends React.Component {
     this.maxY = 0
   }
 
-  updateX (x) {
+  updateX(x) {
     if (x < this.minX) {
       this.minX = x
     }
@@ -27,7 +27,7 @@ class SearchDisplay extends React.Component {
     }
   }
 
-  updateY (y) {
+  updateY(y) {
     if (y < this.minY) {
       this.minY = y
     }
@@ -36,7 +36,7 @@ class SearchDisplay extends React.Component {
     }
   }
 
-  determineXYRange (searchLegs) {
+  determineXYRange(searchLegs) {
     this.minX = 0
     this.minY = 0
     this.maxX = 0
@@ -51,7 +51,7 @@ class SearchDisplay extends React.Component {
     return [Math.abs(this.maxX - this.minX), Math.abs(this.maxY - this.minY)]
   }
 
-  drawSearch (canvas) {
+  drawSearch(canvas) {
     const ctx = canvas.getContext('2d')
     const searchLegs = this.state.search.getLegs()
     const range = this.determineXYRange(searchLegs)
@@ -81,13 +81,13 @@ class SearchDisplay extends React.Component {
     }
   }
 
-  componentDidMount () {
+  componentDidMount() {
     const canvas = this.canvasRef.current
     this.drawSearch(canvas)
   }
 
-  render () {
-    return (<canvas ref={this.canvasRef} width={600} height={600} />)
+  render() {
+    return <canvas ref={this.canvasRef} width={600} height={600} />
   }
 }
 SearchDisplay.propTypes = {
@@ -95,7 +95,7 @@ SearchDisplay.propTypes = {
   leg: PropTypes.number
 }
 
-function constructSearch (values) {
+function constructSearch(values) {
   if (values.searchType === 'sector') {
     return new SectorSearch(values.sweepWidth, values.multiplier, values.iterations, values.initialDirection)
   }
@@ -108,7 +108,7 @@ function constructSearch (values) {
 }
 
 class SearchConfiguration extends React.Component {
-  constructor (props) {
+  constructor(props) {
     super(props)
     this.handleChangeSearch = this.handleChangeSearch.bind(this)
     this.handleChangeSweepWidth = this.handleChangeSweepWidth.bind(this)
@@ -126,7 +126,7 @@ class SearchConfiguration extends React.Component {
     }
   }
 
-  handleChangeSearch (event) {
+  handleChangeSearch(event) {
     const target = event.target
     const value = target.value
 
@@ -143,7 +143,7 @@ class SearchConfiguration extends React.Component {
     })
   }
 
-  handleChangeSweepWidth (event) {
+  handleChangeSweepWidth(event) {
     const target = event.target
     const value = Number(target.value)
 
@@ -160,7 +160,7 @@ class SearchConfiguration extends React.Component {
     })
   }
 
-  handleChangeLegLength (event) {
+  handleChangeLegLength(event) {
     const target = event.target
     const value = Number(target.value)
 
@@ -177,7 +177,7 @@ class SearchConfiguration extends React.Component {
     })
   }
 
-  handleChangeMultiplier (event) {
+  handleChangeMultiplier(event) {
     const target = event.target
     const value = Number(target.value)
 
@@ -194,7 +194,7 @@ class SearchConfiguration extends React.Component {
     })
   }
 
-  handleChangeIterations (event) {
+  handleChangeIterations(event) {
     const target = event.target
     const value = Number(target.value)
 
@@ -211,7 +211,7 @@ class SearchConfiguration extends React.Component {
     })
   }
 
-  handleChangeDirection (event) {
+  handleChangeDirection(event) {
     const target = event.target
     const value = Number(target.value)
 
@@ -228,25 +228,49 @@ class SearchConfiguration extends React.Component {
     })
   }
 
-  render () {
+  render() {
     const labels = []
     const inputs = []
     if (this.state.searchType === 'sector' || this.state.searchType === 'expandingbox') {
-      labels.push((<td key='iterations'>Iterations</td>))
-      inputs.push((<td key='iterations'><Form.Control type='number' onChange={this.handleChangeIterations} value={this.state.iterations} /></td>))
+      labels.push(<td key="iterations">Iterations</td>)
+      inputs.push(
+        <td key="iterations">
+          <Form.Control type="number" onChange={this.handleChangeIterations} value={this.state.iterations} />
+        </td>
+      )
       if (this.state.searchType === 'sector') {
-        labels.push((<td key='multiplier'>Multiplier</td>))
-        inputs.push((<td key='multiplier'><Form.Control type='number' onChange={this.handleChangeMultiplier} value={this.state.multiplier} /></td>))
+        labels.push(<td key="multiplier">Multiplier</td>)
+        inputs.push(
+          <td key="multiplier">
+            <Form.Control type="number" onChange={this.handleChangeMultiplier} value={this.state.multiplier} />
+          </td>
+        )
       }
-      labels.push((<td key='direction'>Initial Direction</td>))
-      inputs.push((<td key='direction'><Form.Control type='number' onChange={this.handleChangeDirection} value={this.state.initialDirection} /></td>))
+      labels.push(<td key="direction">Initial Direction</td>)
+      inputs.push(
+        <td key="direction">
+          <Form.Control type="number" onChange={this.handleChangeDirection} value={this.state.initialDirection} />
+        </td>
+      )
     } else if (this.state.searchType === 'creepingline') {
-      labels.push((<td key='legs'>Leg Length</td>))
-      labels.push((<td key='iterations'>Legs</td>))
-      labels.push((<td key='direction'>Progress Direction</td>))
-      inputs.push((<td key='legs'><Form.Control type='number' onChange={this.handleChangeLegLength} value={this.state.legLength} /></td>))
-      inputs.push((<td key='iterations'><Form.Control type='number' onChange={this.handleChangeIterations} value={this.state.iterations} /></td>))
-      inputs.push((<td key='direction'><Form.Control type='number' onChange={this.handleChangeDirection} value={this.state.initialDirection} /></td>))
+      labels.push(<td key="legs">Leg Length</td>)
+      labels.push(<td key="iterations">Legs</td>)
+      labels.push(<td key="direction">Progress Direction</td>)
+      inputs.push(
+        <td key="legs">
+          <Form.Control type="number" onChange={this.handleChangeLegLength} value={this.state.legLength} />
+        </td>
+      )
+      inputs.push(
+        <td key="iterations">
+          <Form.Control type="number" onChange={this.handleChangeIterations} value={this.state.iterations} />
+        </td>
+      )
+      inputs.push(
+        <td key="direction">
+          <Form.Control type="number" onChange={this.handleChangeDirection} value={this.state.initialDirection} />
+        </td>
+      )
     }
     return (
       <>
@@ -262,12 +286,14 @@ class SearchConfiguration extends React.Component {
             <tr>
               <td>
                 <Form.Select onChange={this.handleChangeSearch}>
-                  <option value='sector'>Sector</option>
-                  <option value='expandingbox'>Expanding Box</option>
-                  <option value='creepingline'>Creeping Line</option>
+                  <option value="sector">Sector</option>
+                  <option value="expandingbox">Expanding Box</option>
+                  <option value="creepingline">Creeping Line</option>
                 </Form.Select>
               </td>
-              <td><Form.Control type='number' onChange={this.handleChangeSweepWidth} value={this.state.sweepWidth} /></td>
+              <td>
+                <Form.Control type="number" onChange={this.handleChangeSweepWidth} value={this.state.sweepWidth} />
+              </td>
               {inputs}
             </tr>
           </tbody>
