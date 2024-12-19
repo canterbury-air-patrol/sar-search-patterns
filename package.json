@@ -2,9 +2,9 @@
   "name": "@canterbury-air-patrol/sar-search-patterns",
   "version": "0.1.1",
   "description": "Draw SAR Search Patterns",
-  "main": "dist/sar-search-patterns.js",
-  "module": "dist/sar-search-patterns.mjs",
-  "types": "dist/sar-search-patterns.d.ts",
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
   "files": [
     "dist/"
   ],
