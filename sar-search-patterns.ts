@@ -1,5 +1,18 @@
+class xy {
+  x: number
+  y: number
+  constructor(x: number, y: number) {
+    this.x = x
+    this.y = y
+  }
+}
+
 class SearchLeg {
-  constructor(from, to, distance, bearing) {
+  from: xy
+  to: xy
+  bearing: number
+  distance: number
+  constructor(from: xy, to: xy, distance: number, bearing: number) {
     this.from = from
     this.to = to
     this.bearing = bearing
@@ -8,21 +21,26 @@ class SearchLeg {
 }
 
 class SearchPattern {
-  constructor(sweepWidth) {
-    this.sweepWidth = Number(sweepWidth)
+  sweepWidth: number
+  searchLegs: SearchLeg[]
+  currentLeg: number
+  searchType?: string
+
+  constructor(sweepWidth: number) {
+    this.sweepWidth = sweepWidth
     this.searchLegs = []
     this.currentLeg = 1
   }
 
-  get leg() {
+  get leg(): SearchLeg {
     return this.searchLegs[this.currentLeg - 1]
   }
 
-  get complete() {
+  get complete(): boolean {
     return this.currentLeg > this.searchLegs.length
   }
 
-  get length() {
+  get length(): number {
     let length = 0
     for (const legIdx in this.searchLegs) {
       const tmpLeg = this.searchLegs[legIdx]
@@ -40,7 +58,7 @@ class SearchPattern {
   }
 }
 
-function move(from, direction, distance) {
+function move(from: xy, direction: number, distance: number) {
   const to = { x: 0, y: 0 }
   const rads = (direction * Math.PI) / 180
   to.x = from.x + Math.sin(rads) * distance
@@ -49,7 +67,11 @@ function move(from, direction, distance) {
 }
 
 class SectorSearch extends SearchPattern {
-  constructor(sweepWidth, multiplier, iterations, startingDirection) {
+  startingDirection: number
+  multiplier: number
+  iterations: number
+
+  constructor(sweepWidth: number, multiplier: number, iterations: number, startingDirection: number) {
     super(sweepWidth)
     this.searchType = 'sector'
     this.startingDirection = Number(startingDirection)
@@ -95,10 +117,13 @@ class SectorSearch extends SearchPattern {
 }
 
 class ExpandingBoxSearch extends SearchPattern {
-  constructor(sweepWidth, iterations, startingDirection) {
+  iterations: number
+  startingDirection: number
+
+  constructor(sweepWidth: number, iterations: number, startingDirection: number) {
     super(sweepWidth)
     this.searchType = 'expandingbox'
-    this.iterations = Number(iterations)
+    this.iterations = iterations
     this.startingDirection = Number(startingDirection)
     this.generateSearchLegs()
   }
@@ -118,7 +143,11 @@ class ExpandingBoxSearch extends SearchPattern {
 }
 
 class CreepingLineAheadSearch extends SearchPattern {
-  constructor(sweepWidth, legLength, legs, progressDirection) {
+  legLength: number
+  legs: number
+  progressDirection: number
+
+  constructor(sweepWidth: number, legLength: number, legs: number, progressDirection: number) {
     super(sweepWidth)
     this.searchType = 'creepingline'
     this.legLength = Number(legLength)
@@ -129,7 +158,7 @@ class CreepingLineAheadSearch extends SearchPattern {
 
   generateSearchLegs() {
     this.searchLegs = []
-    const baseNear = { x: 0, y: 0 }
+    const baseNear: xy = new xy(0, 0)
     const baseFar = move(baseNear, this.progressDirection + 90, this.legLength)
     for (let i = 1; i < this.legs * 2; i++) {
       let direction = this.progressDirection
@@ -161,4 +190,4 @@ class CreepingLineAheadSearch extends SearchPattern {
   }
 }
 
-export { SearchPattern, SectorSearch, ExpandingBoxSearch, CreepingLineAheadSearch }
+export { SearchPattern, SearchLeg, SectorSearch, ExpandingBoxSearch, CreepingLineAheadSearch }

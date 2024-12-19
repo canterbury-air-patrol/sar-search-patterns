@@ -1,11 +1,17 @@
 {
   "name": "@canterbury-air-patrol/sar-search-patterns",
-  "version": "0.0.6",
+  "version": "0.1.1",
   "description": "Draw SAR Search Patterns",
-  "main": "sar-search-patterns.js",
+  "main": "dist/sar-search-patterns.js",
+  "module": "dist/sar-search-patterns.mjs",
+  "types": "dist/sar-search-patterns.d.ts",
+  "files": [
+    "dist/"
+  ],
   "scripts": {
-    "build": "esbuild example.js --bundle --loader:.js=jsx --outdir=out --minify",
-    "check": "eslint *.js && prettier -c *.js",
+    "build": "esbuild example.tsx --bundle --outdir=out --minify",
+    "bundle": "tsup",
+    "check": "eslint *.ts* && prettier -c *.ts*",
     "start": "http-server -a localhost -p 8000",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -26,17 +32,21 @@
   "homepage": "https://github.com/canterbury-air-patrol/sar-search-patterns#readme",
   "devDependencies": {
     "@eslint/js": "^9.12.0",
+    "@types/react": "^19.0.2",
+    "@types/react-dom": "^19.0.2",
     "esbuild": "~0.24.0",
     "eslint": "^9.12.0",
     "eslint-plugin-react": "^7.37.1",
     "globals": "^15.11.0",
     "http-server": "^14.1.1",
     "prettier": "^3.3.3",
-    "react-dom": "~19.0.0"
+    "react-dom": "~19.0.0",
+    "tsup": "^8.3.5",
+    "typescript": "^5.7.2",
+    "typescript-eslint": "^8.18.1"
   },
   "dependencies": {
     "bootstrap": "~5.3.1",
-    "prop-types": "^15.8.1",
     "react": "^19.0.0",
     "react-bootstrap": "~2.10.0"
   }
