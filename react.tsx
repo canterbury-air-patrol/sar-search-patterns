@@ -1,24 +1,37 @@
 import React from 'react'
-import PropTypes from 'prop-types'
 
 import { Table, Form } from 'react-bootstrap'
-import { SectorSearch, ExpandingBoxSearch, CreepingLineAheadSearch } from './sar-search-patterns'
+import { SearchPattern, SearchLeg, SectorSearch, ExpandingBoxSearch, CreepingLineAheadSearch } from './sar-search-patterns'
 
-class SearchDisplay extends React.Component {
-  constructor(props) {
+interface SearchDisplayProps {
+  search: SearchPattern
+  leg?: number
+}
+
+interface SearchDisplayState {
+  search: SearchPattern
+}
+
+class SearchDisplay extends React.Component<SearchDisplayProps, SearchDisplayState> {
+  canvasRef: React.RefObject<HTMLCanvasElement | null>
+  minX: number
+  minY: number
+  maxX: number
+  maxY: number
+
+  constructor(props: SearchDisplayProps) {
     super(props)
     this.state = {
-      search: this.props.search,
-      searchLeg: this.props.leg !== undefined ? this.props.leg : this.props.search.currentLeg
+      search: this.props.search
     }
-    this.canvasRef = React.createRef()
+    this.canvasRef = React.createRef<HTMLCanvasElement>()
     this.minX = 0
     this.minY = 0
     this.maxX = 0
     this.maxY = 0
   }
 
-  updateX(x) {
+  updateX(x: number) {
     if (x < this.minX) {
       this.minX = x
     }
@@ -27,7 +40,7 @@ class SearchDisplay extends React.Component {
     }
   }
 
-  updateY(y) {
+  updateY(y: number) {
     if (y < this.minY) {
       this.minY = y
     }
@@ -36,7 +49,7 @@ class SearchDisplay extends React.Component {
     }
   }
 
-  determineXYRange(searchLegs) {
+  determineXYRange(searchLegs: SearchLeg[]) {
     this.minX = 0
     this.minY = 0
     this.maxX = 0
@@ -51,8 +64,11 @@ class SearchDisplay extends React.Component {
     return [Math.abs(this.maxX - this.minX), Math.abs(this.maxY - this.minY)]
   }
 
-  drawSearch(canvas) {
+  drawSearch(canvas: HTMLCanvasElement) {
     const ctx = canvas.getContext('2d')
+    if (ctx === null) {
+      return
+    }
     const searchLegs = this.state.search.getLegs()
     const range = this.determineXYRange(searchLegs)
     const offsetX = Math.abs(this.minX) + 10
@@ -83,19 +99,17 @@ class SearchDisplay extends React.Component {
 
   componentDidMount() {
     const canvas = this.canvasRef.current
-    this.drawSearch(canvas)
+    if (canvas !== null) {
+      this.drawSearch(canvas)
+    }
   }
 
   render() {
     return <canvas ref={this.canvasRef} width={600} height={600} />
   }
 }
-SearchDisplay.propTypes = {
-  search: PropTypes.object.isRequired,
-  leg: PropTypes.number
-}
 
-function constructSearch(values) {
+function constructSearch(values: SearchConfigurationState) {
   if (values.searchType === 'sector') {
     return new SectorSearch(values.sweepWidth, values.multiplier, values.iterations, values.initialDirection)
   }
@@ -107,9 +121,23 @@ function constructSearch(values) {
   }
 }
 
-class SearchConfiguration extends React.Component {
-  constructor(props) {
+interface SearchConfigurationProps {
+  updateSearch: (search?: SearchPattern) => void
+}
+
+interface SearchConfigurationState {
+  searchType: string
+  sweepWidth: number
+  legLength: number
+  iterations: number
+  initialDirection: number
+  multiplier: number
+}
+
+class SearchConfiguration extends React.Component<SearchConfigurationProps, SearchConfigurationState> {
+  constructor(props: SearchConfigurationProps) {
     super(props)
+    this.handleStateUpdate = this.handleStateUpdate.bind(this)
     this.handleChangeSearch = this.handleChangeSearch.bind(this)
     this.handleChangeSweepWidth = this.handleChangeSweepWidth.bind(this)
     this.handleChangeMultiplier = this.handleChangeMultiplier.bind(this)
@@ -126,106 +154,52 @@ class SearchConfiguration extends React.Component {
     }
   }
 
-  handleChangeSearch(event) {
+  handleStateUpdate() {
+    if (this.props.updateSearch !== undefined) {
+      this.props.updateSearch(constructSearch(this.state))
+    }
+  }
+
+  handleChangeSearch(event: React.ChangeEvent<HTMLSelectElement>) {
     const target = event.target
     const value = target.value
 
-    this.setState(function (oldState) {
-      oldState.searchType = value
-
-      if (this.props.updateSearch !== undefined) {
-        this.props.updateSearch(constructSearch(oldState))
-      }
-
-      return {
-        searchType: value
-      }
-    })
+    this.setState({ searchType: value }, this.handleStateUpdate)
   }
 
-  handleChangeSweepWidth(event) {
+  handleChangeSweepWidth(event: React.ChangeEvent<HTMLInputElement>) {
     const target = event.target
     const value = Number(target.value)
 
-    this.setState(function (oldState) {
-      oldState.sweepWidth = value
-
-      if (this.props.updateSearch !== undefined) {
-        this.props.updateSearch(constructSearch(oldState))
-      }
-
-      return {
-        sweepWidth: value
-      }
-    })
+    this.setState({ sweepWidth: value }, this.handleStateUpdate)
   }
 
-  handleChangeLegLength(event) {
+  handleChangeLegLength(event: React.ChangeEvent<HTMLInputElement>) {
     const target = event.target
     const value = Number(target.value)
 
-    this.setState(function (oldState) {
-      oldState.legLength = value
-
-      if (this.props.updateSearch !== undefined) {
-        this.props.updateSearch(constructSearch(oldState))
-      }
-
-      return {
-        legLength: value
-      }
-    })
+    this.setState({ legLength: value }, this.handleStateUpdate)
   }
 
-  handleChangeMultiplier(event) {
+  handleChangeMultiplier(event: React.ChangeEvent<HTMLInputElement>) {
     const target = event.target
     const value = Number(target.value)
 
-    this.setState(function (oldState) {
-      oldState.multiplier = value
-
-      if (this.props.updateSearch !== undefined) {
-        this.props.updateSearch(constructSearch(oldState))
-      }
-
-      return {
-        multiplier: value
-      }
-    })
+    this.setState({ multiplier: value }, this.handleStateUpdate)
   }
 
-  handleChangeIterations(event) {
+  handleChangeIterations(event: React.ChangeEvent<HTMLInputElement>) {
     const target = event.target
     const value = Number(target.value)
 
-    this.setState(function (oldState) {
-      oldState.iterations = value
-
-      if (this.props.updateSearch !== undefined) {
-        this.props.updateSearch(constructSearch(oldState))
-      }
-
-      return {
-        iterations: value
-      }
-    })
+    this.setState({ iterations: value }, this.handleStateUpdate)
   }
 
-  handleChangeDirection(event) {
+  handleChangeDirection(event: React.ChangeEvent<HTMLInputElement>) {
     const target = event.target
     const value = Number(target.value)
 
-    this.setState(function (oldState) {
-      oldState.initialDirection = value
-
-      if (this.props.updateSearch !== undefined) {
-        this.props.updateSearch(constructSearch(oldState))
-      }
-
-      return {
-        initialDirection: value
-      }
-    })
+    this.setState({ initialDirection: value }, this.handleStateUpdate)
   }
 
   render() {
@@ -301,9 +275,6 @@ class SearchConfiguration extends React.Component {
       </>
     )
   }
-}
-SearchConfiguration.propTypes = {
-  updateSearch: PropTypes.func
 }
 
 export { SearchDisplay, SearchConfiguration }
