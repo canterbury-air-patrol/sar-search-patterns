@@ -56,6 +56,10 @@ class SearchPattern {
   nextLeg() {
     this.currentLeg++
   }
+
+  uniqueKey(): string {
+    return `${this.searchType}-${this.sweepWidth}-${this.searchLegs}-${this.currentLeg}`
+  }
 }
 
 function move(from: xy, direction: number, distance: number) {
@@ -114,6 +118,10 @@ class SectorSearch extends SearchPattern {
       lastPoint = to
     }
   }
+
+  uniqueKey(): string {
+    return `${this.searchType}-${this.sweepWidth}-${this.searchLegs}-${this.currentLeg}-${this.startingDirection}-${this.multiplier}-${this.iterations}`
+  }
 }
 
 class ExpandingBoxSearch extends SearchPattern {
@@ -139,6 +147,10 @@ class ExpandingBoxSearch extends SearchPattern {
       direction = (direction + 90) % 360
       from = to
     }
+  }
+
+  uniqueKey(): string {
+    return `${this.searchType}-${this.sweepWidth}-${this.searchLegs}-${this.currentLeg}-${this.startingDirection}-${this.iterations}`
   }
 }
 
@@ -187,6 +199,10 @@ class CreepingLineAheadSearch extends SearchPattern {
       }
       this.searchLegs.push(new SearchLeg(from, to, distance, direction))
     }
+  }
+
+  uniqueKey(): string {
+    return `${this.searchType}-${this.sweepWidth}-${this.searchLegs}-${this.currentLeg}-${this.legLength}-${this.legs}-${this.progressDirection}`
   }
 }
 
